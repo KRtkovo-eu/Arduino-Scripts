@@ -9,11 +9,26 @@ byte runSeconds = 0;
 
 #define CLK 2 //pins definitions for TM1637 and can be changed to other ports
 #define DIO 3
+#define SUMMERTIMESET 4
+#define STANDARDTIMESET 5
 TM1637 tm1637(CLK, DIO);
 
 void setup() {
   rtc.begin();
   //rtc.adjust(DateTime(2022,03,18,12,43,0)); // YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS - manually set current time to adjust RTC and then comment this line to prevent RTC time shift on each device restart
+  
+  // handle switch to summer time (manually by user connecting ground and pin 4)
+  pinMode(SUMMERTIMESET, INPUT_PULLUP);
+  if(digitalRead(SUMMERTIMESET) == LOW) {
+    DateTime now = rtc.now();
+    rtc.adjust(DateTime((now.year(), DEC),(now.month(), DEC),(now.day(), DEC),(now.hour(), DEC) + 1,(now.minute(), DEC),0)); // YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS - manually set current time to adjust RTC and then comment this line to prevent RTC time shift on each device restart
+  }
+  // handle switch to standard time (manually by user connecting ground and pin 5)
+  pinMode(STANDARDTIMESET, INPUT_PULLUP);
+  if(digitalRead(STANDARDTIMESET) == LOW) {
+    DateTime now = rtc.now();
+    rtc.adjust(DateTime((now.year(), DEC),(now.month(), DEC),(now.day(), DEC),(now.hour(), DEC) - 1,(now.minute(), DEC),0)); // YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS - manually set current time to adjust RTC and then comment this line to prevent RTC time shift on each device restart
+  }
   
   // do initial time variables update
   UpdateDeviceTime();
@@ -32,7 +47,7 @@ void loop() {
 
 static void UpdateDeviceTime() {
   DateTime now = rtc.now();
-  runSeconds = now.seconds(), DEC;
+  runSeconds = now.second(), DEC;
   runHours = now.hour(), DEC;
   runMinutes = now.minute(), DEC;
 }
