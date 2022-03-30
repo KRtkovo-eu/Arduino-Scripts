@@ -4,9 +4,6 @@
 #include "RTClib.h" // source: https://github.com/adafruit/RTClib
 
 RTC_DS1307 rtc;
-
-int8_t TimeDisp[] = {0x00, 0x00, 0x00, 0x00};
-
 StopWatch stopWatchClock;
 byte runHours = 0;
 byte runMinutes = 0;
@@ -16,7 +13,7 @@ byte runMinutesShift = 0;
 byte currentHours = 0;
 byte currentMinutes = 0;
 
-#define CLK 2//pins definitions for TM1637 and can be changed to other ports
+#define CLK 2 //pins definitions for TM1637 and can be changed to other ports
 #define DIO 3
 TM1637 tm1637(CLK, DIO);
 
