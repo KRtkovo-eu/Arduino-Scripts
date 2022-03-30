@@ -40,6 +40,9 @@ void setup() {
 void loop() {
   DrawClockTime();
   UpdateDeviceTime();
+  
+  // delay 1 second to prevent displaying weird characters
+  delay(1000);
 }
 
 
@@ -47,6 +50,7 @@ unsigned long startMillisClock;
 static void UpdateDeviceTime() {
   unsigned long runMillis = stopWatchClock.elapsed();
   
+  // Update time variables only once per second
   if(runMillis - startMillisClock >= 1000) {
     unsigned long allSeconds = runMillis/1000;
     runHours = allSeconds/3600;
@@ -54,7 +58,7 @@ static void UpdateDeviceTime() {
     runMinutes = secsRemaining/60;
     runSeconds = secsRemaining%60;
 
-    // Handle time shift set by user
+    // Handle time shift set by user or rtc
     currentHours = runHours + runHoursShift;
     currentMinutes = runMinutes + runMinutesShift;
 
@@ -83,7 +87,4 @@ static void DrawClockTime() {
   }
 
   tm1637.display(TimeDisp);
-
-  // delay 1 second to prevent displaying weird characters
-  delay(1000);
 }
