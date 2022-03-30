@@ -21,22 +21,25 @@ byte currentMinutes = 0;
 TM1637 tm1637(CLK, DIO);
 
 void setup() {
-  // set display
-  tm1637.init();
-  tm1637.set(5); // set brightness 0-7
-
-  // start stop watch
-  stopWatchClock.start();
-  
   rtc.begin();
   //rtc.adjust(DateTime(2022,03,18,12,43,0)); // YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS - manually set current time to adjust RTC and then comment this line to prevent RTC time shift on each device restart
   DateTime now = rtc.now();
   runHoursShift = now.hour(), DEC;
   runMinutesShift = now.minute(), DEC;
+  
+  // start stop watch
+  stopWatchClock.start();
+  
+  // do initial time variables update
+  UpdateDeviceTime();
+  
+  // set display
+  tm1637.init();
+  tm1637.set(5); // set brightness 0-7
 }
 void loop() {
-  UpdateDeviceTime();
   DrawClockTime();
+  UpdateDeviceTime();
 }
 
 
